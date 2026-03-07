@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+PyMuPDF
+pandas
+scikit-learn
+pydantic
+motor
+bson

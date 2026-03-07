@@ -1,0 +1,424 @@
+{
+    "Software Engineer": {
+        "required_skills": [
+            "Python",
+            "JavaScript",
+            "TypeScript",
+            "React",
+            "Node.js",
+            "Git",
+            "SQL",
+            "Docker",
+            "REST APIs",
+            "AWS",
+            "Agile",
+            "Linux",
+            "CI/CD"
+        ],
+        "priority_skills": [
+            "Python",
+            "JavaScript",
+            "React",
+            "Git",
+            "SQL"
+        ],
+        "description": "Designs, builds, and maintains scalable software systems and APIs.",
+        "salary_range": "$90k – $150k",
+        "demand": "Very High",
+        "growth_pct": 25
+    },
+    "Data Scientist": {
+        "required_skills": [
+            "Python",
+            "R",
+            "SQL",
+            "Machine Learning",
+            "Deep Learning",
+            "Pandas",
+            "NumPy",
+            "TensorFlow",
+            "PyTorch",
+            "Statistics",
+            "Data Visualization",
+            "Jupyter",
+            "Scikit-learn",
+            "Tableau"
+        ],
+        "priority_skills": [
+            "Python",
+            "Machine Learning",
+            "Statistics",
+            "Pandas",
+            "SQL"
+        ],
+        "description": "Builds ML models and derives insights from large datasets.",
+        "salary_range": "$100k – $165k",
+        "demand": "Very High",
+        "growth_pct": 36
+    },
+    "Product Manager": {
+        "required_skills": [
+            "Agile",
+            "Scrum",
+            "Wireframing",
+            "Data Analysis",
+            "Jira",
+            "Communication",
+            "Leadership",
+            "Market Research",
+            "Product Roadmap",
+            "User Stories",
+            "A/B Testing",
+            "Stakeholder Management"
+        ],
+        "priority_skills": [
+            "Agile",
+            "Communication",
+            "Leadership",
+            "Jira",
+            "Market Research"
+        ],
+        "description": "Drives product strategy and works cross-functionally with engineering and design.",
+        "salary_range": "$110k – $175k",
+        "demand": "High",
+        "growth_pct": 19
+    },
+    "DevOps Engineer": {
+        "required_skills": [
+            "Docker",
+            "Kubernetes",
+            "Terraform",
+            "AWS",
+            "Azure",
+            "CI/CD",
+            "Linux",
+            "Git",
+            "Ansible",
+            "Prometheus",
+            "Grafana",
+            "Bash",
+            "Python",
+            "Jenkins",
+            "GitHub Actions"
+        ],
+        "priority_skills": [
+            "Docker",
+            "Kubernetes",
+            "AWS",
+            "CI/CD",
+            "Terraform"
+        ],
+        "description": "Builds and maintains cloud infrastructure and deployment pipelines.",
+        "salary_range": "$105k – $170k",
+        "demand": "Very High",
+        "growth_pct": 28
+    },
+    "Machine Learning Engineer": {
+        "required_skills": [
+            "Python",
+            "TensorFlow",
+            "PyTorch",
+            "Machine Learning",
+            "Deep Learning",
+            "MLflow",
+            "Docker",
+            "Kubernetes",
+            "SQL",
+            "Scikit-learn",
+            "NLP",
+            "Computer Vision",
+            "AWS",
+            "Spark"
+        ],
+        "priority_skills": [
+            "Python",
+            "PyTorch",
+            "TensorFlow",
+            "Machine Learning",
+            "Docker"
+        ],
+        "description": "Deploys and scales ML models in production environments.",
+        "salary_range": "$120k – $200k",
+        "demand": "Very High",
+        "growth_pct": 40
+    },
+    "Frontend Developer": {
+        "required_skills": [
+            "JavaScript",
+            "TypeScript",
+            "React",
+            "Angular",
+            "Vue.js",
+            "HTML",
+            "CSS",
+            "Redux",
+            "GraphQL",
+            "Git",
+            "Figma",
+            "Webpack",
+            "Tailwind",
+            "REST APIs",
+            "Agile"
+        ],
+        "priority_skills": [
+            "JavaScript",
+            "React",
+            "TypeScript",
+            "HTML",
+            "CSS"
+        ],
+        "description": "Creates responsive and accessible user interfaces for web applications.",
+        "salary_range": "$75k – $130k",
+        "demand": "High",
+        "growth_pct": 16
+    },
+    "Backend Developer": {
+        "required_skills": [
+            "Python",
+            "Java",
+            "Node.js",
+            "FastAPI",
+            "Django",
+            "Spring Boot",
+            "SQL",
+            "MongoDB",
+            "PostgreSQL",
+            "Redis",
+            "Docker",
+            "AWS",
+            "REST APIs",
+            "Git",
+            "Linux"
+        ],
+        "priority_skills": [
+            "Python",
+            "SQL",
+            "REST APIs",
+            "Node.js",
+            "Docker"
+        ],
+        "description": "Builds server-side services, APIs, and database-driven applications.",
+        "salary_range": "$85k – $145k",
+        "demand": "High",
+        "growth_pct": 20
+    },
+    "Data Analyst": {
+        "required_skills": [
+            "SQL",
+            "Python",
+            "Excel",
+            "Tableau",
+            "Power BI",
+            "Data Visualization",
+            "Statistics",
+            "Pandas",
+            "R",
+            "Communication",
+            "Business Analysis",
+            "Data Analysis"
+        ],
+        "priority_skills": [
+            "SQL",
+            "Python",
+            "Tableau",
+            "Data Visualization",
+            "Statistics"
+        ],
+        "description": "Analyzes business data and creates dashboards to drive decisions.",
+        "salary_range": "$60k – $100k",
+        "demand": "High",
+        "growth_pct": 23
+    },
+    "Cloud Architect": {
+        "required_skills": [
+            "AWS",
+            "Azure",
+            "GCP",
+            "Terraform",
+            "Kubernetes",
+            "Docker",
+            "Linux",
+            "Security",
+            "CI/CD",
+            "Networking",
+            "Serverless",
+            "IAM",
+            "Infrastructure as Code",
+            "Microservices"
+        ],
+        "priority_skills": [
+            "AWS",
+            "Terraform",
+            "Kubernetes",
+            "Microservices",
+            "CI/CD"
+        ],
+        "description": "Designs enterprise-scale cloud infrastructure and migration strategies.",
+        "salary_range": "$140k – $220k",
+        "demand": "High",
+        "growth_pct": 21
+    },
+    "Cybersecurity Analyst": {
+        "required_skills": [
+            "Cybersecurity",
+            "Penetration Testing",
+            "OWASP",
+            "Network Security",
+            "Linux",
+            "Python",
+            "SIEM",
+            "Vulnerability Assessment",
+            "Cryptography",
+            "Firewall",
+            "IAM",
+            "SSL"
+        ],
+        "priority_skills": [
+            "Penetration Testing",
+            "OWASP",
+            "Network Security",
+            "Python",
+            "Linux"
+        ],
+        "description": "Protects systems and networks against cyber threats and breaches.",
+        "salary_range": "$90k – $155k",
+        "demand": "Very High",
+        "growth_pct": 33
+    },
+    "Full Stack Developer": {
+        "required_skills": [
+            "JavaScript",
+            "TypeScript",
+            "React",
+            "Node.js",
+            "Python",
+            "SQL",
+            "MongoDB",
+            "Docker",
+            "Git",
+            "REST APIs",
+            "HTML",
+            "CSS",
+            "AWS",
+            "Agile"
+        ],
+        "priority_skills": [
+            "JavaScript",
+            "React",
+            "Node.js",
+            "SQL",
+            "Docker"
+        ],
+        "description": "Develops both client-side and server-side applications end-to-end.",
+        "salary_range": "$95k – $155k",
+        "demand": "Very High",
+        "growth_pct": 24
+    },
+    "AI/ML Researcher": {
+        "required_skills": [
+            "Python",
+            "PyTorch",
+            "TensorFlow",
+            "NLP",
+            "Computer Vision",
+            "Statistics",
+            "Deep Learning",
+            "LLM",
+            "Research",
+            "Hugging Face",
+            "Mathematics",
+            "Transformers"
+        ],
+        "priority_skills": [
+            "Python",
+            "PyTorch",
+            "NLP",
+            "Deep Learning",
+            "Statistics"
+        ],
+        "description": "Advances AI capabilities through research and experimental modelling.",
+        "salary_range": "$130k – $210k",
+        "demand": "Very High",
+        "growth_pct": 45
+    },
+    "Mobile Developer": {
+        "required_skills": [
+            "React Native",
+            "Flutter",
+            "Swift",
+            "Kotlin",
+            "Android",
+            "iOS",
+            "Git",
+            "REST APIs",
+            "Firebase",
+            "Agile",
+            "JavaScript",
+            "TypeScript"
+        ],
+        "priority_skills": [
+            "React Native",
+            "Swift",
+            "Kotlin",
+            "Flutter",
+            "Firebase"
+        ],
+        "description": "Builds native and cross-platform mobile applications for iOS and Android.",
+        "salary_range": "$85k – $145k",
+        "demand": "High",
+        "growth_pct": 22
+    },
+    "UX/UI Designer": {
+        "required_skills": [
+            "Figma",
+            "Adobe XD",
+            "Wireframing",
+            "User Stories",
+            "Communication",
+            "Prototyping",
+            "Design Thinking",
+            "A/B Testing",
+            "CSS",
+            "HTML"
+        ],
+        "priority_skills": [
+            "Figma",
+            "Wireframing",
+            "Design Thinking",
+            "Prototyping",
+            "User Stories"
+        ],
+        "description": "Designs intuitive user experiences and visual interfaces.",
+        "salary_range": "$70k – $120k",
+        "demand": "High",
+        "growth_pct": 17
+    },
+    "Site Reliability Engineer": {
+        "required_skills": [
+            "Linux",
+            "Python",
+            "Kubernetes",
+            "Docker",
+            "Prometheus",
+            "Grafana",
+            "AWS",
+            "CI/CD",
+            "Bash",
+            "Go",
+            "Terraform",
+            "Incident Management",
+            "Git"
+        ],
+        "priority_skills": [
+            "Linux",
+            "Kubernetes",
+            "Python",
+            "Prometheus",
+            "Docker"
+        ],
+        "description": "Ensures the reliability, scalability, and performance of production systems.",
+        "salary_range": "$120k – $190k",
+        "demand": "High",
+        "growth_pct": 27
+    }
+}
