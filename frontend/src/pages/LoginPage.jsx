@@ -39,8 +39,17 @@ const LoginPage = () => {
 
   return (
     <div className="auth-container">
+      {/* Animated Background Shapes */}
+      <div className="floating-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+        <div className="shape shape-3"></div>
+        <div className="shape shape-4"></div>
+      </div>
+
       <div className="auth-card">
         <div className="auth-header">
+          <img src="/logo.jpeg" alt="Gap2Grow Logo" style={{ width: '64px', height: '64px', borderRadius: '12px', objectFit: 'cover', margin: '0 auto 16px', display: 'block' }} />
           <h1 className="auth-title">Welcome Back</h1>
           <p className="auth-subtitle">Sign in to your Gap2Grow account</p>
         </div>

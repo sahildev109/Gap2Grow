@@ -22,7 +22,7 @@ const NavigationBar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <div className="navbar-logo">G2G</div>
+          <img src="/logo.jpeg" alt="Gap2Grow Logo" style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', marginRight: '12px' }} />
           <span className="navbar-title">Gap2Grow</span>
         </div>
 

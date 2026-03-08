@@ -1,16 +1,31 @@
-# React + Vite
+# Dynamic User Interface (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 What It Does
+This component is the visual and interactive layer that the user actually sees. It is responsible for orchestrating the user's journey, capturing inputs securely, securely keeping track of global state across multiple pages, and drastically transforming raw JSON data into beautiful, premium aesthetics and charts.
+1. Provides the Login/Signup portal.
+2. Manages file uploads (Drag & Drop UI) and communicates with multiple distinct API endpoints across different domains/ports.
+3. Visualizes complex data using radial progress bars, status badges, timelines, and multi-layered cards.
+4. Allows users to export High-Resolution PDF files locally from the browser.
 
-Currently, two official plugins are available:
+## 🛠️ Tech Stack
+*   **Core Framework:** React.js
+*   **Build Tool:** Vite
+*   **Routing:** React Router DOM
+*   **Styling:** Vanilla CSS (Glassmorphism, CSS Variables, Keyframe Animations)
+*   **Icons:** Lucide-React
+*   **PDF Generation:** `html2canvas` & `jsPDF`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 💡 How It Works
+The app is wrapped in a global `DashboardContext` Provider. This prevents "prop-drilling" and allows any page in the app (like the Career Report page) to instantly know what happened on the previous page (like the Skill Gap page).
+When a user clicks "Generate", the React component sets a local `loading` state to trigger beautiful spinners. It fires asynchronous `fetch` calls to the Node.js backend. Once the massive JSON object is returned, React quickly re-renders the DOM, mapping over the arrays to build the step-by-step roadmap UI. 
+For downloads, `html2canvas` algorithmically paints a literal screenshot of the loaded DOM, which `jsPDF` then patches together into a paginated binary file sent straight to the user's download folder.
 
-## React Compiler
+## 🎯 Why This is Useful
+**Why React?**
+React's component-based virtual DOM is practically required when dealing with massive, deeply nested, AI-generated JSON outputs. Modularity allows us to build a visually impressive `GlassCard` wrapper component once, and then inject dynamic AI data into it indefinitely.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Why Vite?**
+Vite replaces older bundlers like Create-React-App/Webpack. It uses native ES modules to provide near-instantaneous hot-module reloading (HMR). This drastically accelerates development speed, especially when tweaking complex CSS animations.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Why High Aesthetics?**
+Generative AI tools are becoming commonplace. In order to impress end-users, an AI product must feel premium, fluid, and magical. By heavily utilizing complex CSS gradients, hover-state physics, and glassmorphism transparency, the perceived value of the AI's output is vastly augmented.

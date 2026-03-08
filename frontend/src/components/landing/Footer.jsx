@@ -16,7 +16,7 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-content">
           <div className="footer-column footer-brand">
-            <div className="footer-logo">G2G</div>
+            <img src="/logo.jpeg" alt="Gap2Grow Logo" style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', marginBottom: '12px' }} />
             <h3 className="footer-brand-name">Gap2Grow</h3>
             <p className="footer-tagline">Bridging careers since 2024</p>
           </div>

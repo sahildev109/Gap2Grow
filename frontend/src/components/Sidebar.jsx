@@ -84,8 +84,8 @@ const Sidebar = () => {
             >
                 <div className="sidebar-header">
                     <div className="logo-container">
-                        <div className="logo-icon">
-                            <BrainCircuit size={28} />
+                        <div className="logo-icon" style={{ background: 'transparent', padding: 0, display: 'flex', alignItems: 'center' }}>
+                            <img src="/logo.jpeg" alt="Gap2Grow Logo" style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />
                         </div>
                         <span className="logo-text text-gradient">Gap2Grow</span>
                     </div>

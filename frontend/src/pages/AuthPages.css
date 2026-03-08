@@ -1,15 +1,90 @@
 /* Auth Pages Styles */
 
+/* Auth container base */
 .auth-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+}
+
+/* Add a grid overlay */
+.auth-container::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  background-image: 
+    linear-gradient(rgba(124, 58, 237, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* Floating Shapes Container */
+.floating-shapes {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Base shape styles */
+.shape {
+  position: absolute;
+  filter: blur(40px);
+  opacity: 0.6;
+  animation: float 20s infinite ease-in-out alternate;
+  border-radius: 50%; /* default circle */
+}
+
+/* Specific shapes */
+.shape-1 {
+  width: 400px; height: 400px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.5) 0%, rgba(168, 85, 247, 0.5) 100%);
+  top: -10%; left: -10%;
+  animation-duration: 25s;
+}
+
+.shape-2 {
+  width: 300px; height: 300px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(16, 185, 129, 0.4) 100%);
+  bottom: -5%; right: -5%;
+  animation-duration: 22s;
+  animation-delay: -5s;
+}
+
+.shape-3 {
+  width: 250px; height: 250px;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.4) 0%, rgba(244, 63, 94, 0.4) 100%);
+  top: 40%; left: 60%;
+  animation-duration: 28s;
+  animation-delay: -12s;
+}
+
+.shape-4 {
+  width: 350px; height: 350px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(239, 68, 68, 0.3) 100%);
+  top: 15%; right: 15%;
+  animation-duration: 30s;
+  animation-delay: -2s;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33% { transform: translate(30px, -50px) rotate(10deg) scale(1.1); }
+  66% { transform: translate(-20px, 20px) rotate(-5deg) scale(0.95); }
+  100% { transform: translate(40px, 40px) rotate(15deg) scale(1.05); }
 }
 
 .auth-card {
+  position: relative;
+  z-index: 10;
   width: 100%;
   max-width: 450px;
   background: white;
