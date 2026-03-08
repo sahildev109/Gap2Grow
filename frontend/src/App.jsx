@@ -1,6 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
-import Home from './pages/Home';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
+import { DashboardProvider } from './context/DashboardContext';
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
 import Dashboard from './pages/Dashboard';
 import Results from './pages/Results';
 import ResumeAnalyzer from './pages/ResumeAnalyzer';
@@ -12,28 +17,93 @@ import Settings from './pages/Settings';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes without Sidebar */}
-        <Route path="/" element={<Home />} />
+    <AuthProvider>
+      <DashboardProvider>
+        <Router>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
 
-        {/* Protected/App Routes with Sidebar */}
-        <Route path="/*" element={
-          <MainLayout>
-            <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/resume-analyzer" element={<ResumeAnalyzer />} />
-              <Route path="/skill-gap" element={<SkillGapForecast />} />
-              <Route path="/market-intelligence" element={<MarketIntelligence />} />
-              <Route path="/roadmap" element={<LearningRoadmap />} />
-              <Route path="/career-report" element={<AiCareerReport />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/results" element={<Results />} />
-            </Routes>
-          </MainLayout>
-        } />
-      </Routes>
-    </Router>
+            {/* Protected/App Routes with Sidebar */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Dashboard />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Results />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/skills" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ResumeAnalyzer />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/resume-analyzer" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <ResumeAnalyzer />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/skill-gap" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <SkillGapForecast />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/market-intelligence" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <MarketIntelligence />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/roadmap" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <LearningRoadmap />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/career-report" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <AiCareerReport />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/progress" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Dashboard />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Settings />
+                </MainLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Catch all - redirect to home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </DashboardProvider>
+    </AuthProvider>
   );
 }
 

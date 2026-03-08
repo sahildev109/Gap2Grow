@@ -9,3 +9,8 @@ env/
 ENV/
 .venv/
 .ENV/
+
+node_modules/
+.env
+dist/
+build/

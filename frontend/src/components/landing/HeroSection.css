@@ -1,0 +1,320 @@
+/* Hero Section Styles */
+
+.hero-section {
+  width: 100%;
+  min-height: 600px;
+  margin-top: 70px;
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+  padding: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-container {
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Left Column */
+.hero-content {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.hero-headline {
+  font-size: 56px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.hero-description {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin-bottom: 40px;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.hero-btn {
+  padding: 14px 32px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.hero-btn-primary {
+  background: white;
+  color: #7C3AED;
+}
+
+.hero-btn-primary:hover {
+  background: #F3E8FF;
+  color: #5B21B6;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.hero-btn-primary:active {
+  transform: translateY(0);
+}
+
+.hero-btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.hero-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #F3E8FF;
+  transform: translateY(-2px);
+}
+
+.hero-btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* Right Column - Illustration */
+.hero-illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.illustration-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.illustration-element {
+  position: absolute;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.element-1 {
+  width: 150px;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(243, 232, 255, 0.9));
+  top: 20px;
+  left: 50px;
+  animation: float-element-1 6s ease-in-out infinite;
+}
+
+.element-2 {
+  width: 180px;
+  height: 140px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(192, 132, 252, 0.2));
+  top: 100px;
+  right: 40px;
+  animation: float-element-2 7s ease-in-out infinite;
+}
+
+.element-3 {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(160, 85, 247, 0.15));
+  bottom: 50px;
+  left: 100px;
+  border-radius: 50%;
+  animation: float-element-3 5s ease-in-out infinite;
+}
+
+.element-4 {
+  width: 100px;
+  height: 160px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(124, 58, 237, 0.1));
+  bottom: 80px;
+  right: 80px;
+  animation: float-element-4 8s ease-in-out infinite;
+}
+
+.illustration-graphic {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  z-index: 10;
+}
+
+.graphic-circle {
+  position: absolute;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+}
+
+.circle-1 {
+  width: 120px;
+  height: 120px;
+  top: 40px;
+  left: 40px;
+  animation: rotate-slow 20s linear infinite;
+}
+
+.circle-2 {
+  width: 80px;
+  height: 80px;
+  top: 60px;
+  left: 60px;
+  border-color: rgba(255, 255, 255, 0.5);
+  animation: rotate-reverse 15s linear infinite;
+}
+
+.graphic-curve {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes float-element-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes float-element-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-3deg); }
+}
+
+@keyframes float-element-3 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-25px); }
+}
+
+@keyframes float-element-4 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-18px) rotate(5deg); }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 1024px) {
+  .hero-section {
+    min-height: auto;
+    padding: 40px;
+  }
+
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero-headline {
+    font-size: 42px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .hero-buttons {
+    flex-wrap: wrap;
+  }
+
+  .illustration-container {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    margin-top: 60px;
+    padding: 40px 24px;
+    min-height: 600px;
+  }
+
+  .hero-headline {
+    font-size: 36px;
+    text-align: center;
+  }
+
+  .hero-description {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-btn {
+    width: 100%;
+    height: 48px;
+  }
+}
