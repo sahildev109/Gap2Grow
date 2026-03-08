@@ -1,45 +1,110 @@
-# Gap2Grow - AI Resume Analyzer & Skill Gap Prediction Platform
+# Gap2Grow - AI Career Growth & Skill Gap Platform
 
-Gap2Grow is a full-stack, hackathon-ready employability enhancement platform. It uses AI to parse resumes, compare user skills against real-time job market mock data, and generate personalized learning roadmaps.
+Gap2Grow is a comprehensive full-stack platform designed to accelerate employability. It uses a dual-backend architecture to parse resumes with NLP, predict skill gaps based on live market data, and leverage Google Gemini AI to generate highly personalized Career Reports and Learning Roadmaps.
 
-## Architecture
+## 🏗️ Architecture
 
-- **Frontend:** React.js, Vite, Vanilla CSS (Glassmorphism & High Aesthetic UI)
-- **Backend:** Python, FastAPI, Motor (MongoDB), PyMuPDF (PDF Parsing)
-- **System Flow:**
-  1. User uploads a PDF resume and enters a target role on the frontend dashboard.
-  2. The FastAPI backend extracts text via `PyMuPDF` and uses a heuristic NLP strategy to identify tech skills.
-  3. The analysis service retrieves the mock job skills from the data layer and compares them via Set intersection to calculate a "Skill Gap Score."
-  4. The roadmap service generates a prioritized step-by-step roadmap for missing skills, including relevant Coursera/Udemy links.
-  5. The React frontend visualizes the results dynamically using radial progress bars, badges, and a custom timeline.
+- **Frontend:** React.js, Vite, Vanilla CSS (Glassmorphism & High-Aesthetic Animations)
+- **Backend 1 (Data & AI Generation):** Node.js, Express, MongoDB, Google Gemini SDK
+- **Backend 2 (NLP & Resume Parsing):** Python, FastAPI, PyMuPDF
+- **Database:** MongoDB (User Auth, Skill Gaps, Roadmaps, Reports)
 
-## How to Run Locally
+---
 
-### 1. Backend (FastAPI)
-Navigate to the backend directory, activate the Python virtual environment, install dependencies, and run the server.
+## 🚀 Setup Guide
 
-```bash
-cd backend
-python -m venv venv
-# Windows: .\venv\Scripts\activate
-# Mac/Linux: source venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
-The backend API will run on `http://localhost:8000`.
+To run this application, you will need to run all three parts of the stack simultaneously in separate terminal windows.
 
-### 2. Frontend (React + Vite)
-Open a new terminal, navigate to the frontend directory, install dependencies, and start the development server.
+### Prerequisites
+- Node.js (v18 or higher)
+- Python (3.9 or higher)
+- MongoDB (Running locally or a MongoDB Atlas URI)
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-The frontend will run on the port provided by Vite (e.g., `http://localhost:5173`).
+---
 
-### 3. Usage
-- Go to the frontend URL.
-- Use the aesthetic Login/Signup view (Auth logic is mocked for the demo).
-- On the Dashboard, choose your "Target Role" and select a sample PDF resume.
-- Analyze your future potential and view your targeted upskilling roadmap on the dynamic Results page!
+### Step 1: Node.js Backend (Core API & Authentication)
+This server handles user accounts, database operations, and calls to the Gemini AI API.
+
+1. Open a terminal and navigate to the Node.js backend directory:
+   ```bash
+   cd backend-nodejs
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. **Environment Variables:** Create a `.env` file inside the `backend-nodejs` folder and add the following:
+   ```env
+   PORT=5000
+   MONGO_URI=mongodb://localhost:27017/gap2grow
+   JWT_SECRET=your_super_secret_jwt_key
+   GEMINI_API_KEY=your_google_gemini_api_key_here
+   ```
+4. Start the server:
+   ```bash
+   npm run dev
+   ```
+   *(Server will run on http://localhost:5000)*
+
+---
+
+### Step 2: Python Backend (NLP & Analysis)
+This server handles parsing PDF resumes and calculating skill gap scores using Python math and NLP logic.
+
+1. Open a second terminal and navigate to the Python backend directory:
+   ```bash
+   cd backend
+   ```
+2. Create and activate a virtual environment:
+   ```bash
+   # Windows
+   python -m venv venv
+   .\venv\Scripts\activate
+
+   # Mac/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Start the server:
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
+   *(Server will run on http://localhost:8000)*
+
+---
+
+### Step 3: React Frontend (Visual UI)
+This is the beautiful user-facing web application.
+
+1. Open a third terminal and navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. **Environment Variables:** Create a `.env` file inside the `frontend` folder and add the following:
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   ```
+4. Start the frontend:
+   ```bash
+   npm run dev
+   ```
+   *(Frontend will typically run on http://localhost:5173)*
+
+---
+
+## 💡 Usage Guide
+
+1. **Start all 3 servers** (Node.js, Python, and React).
+2. Open the React frontend URL in your browser.
+3. Sign up for a new account and log in.
+4. Navigate to the **Skill Gap Forecast**, upload your tech resume, and generate your baseline analysis.
+5. Head to the **AI Career Report** and **Learning Roadmap** tabs to generate customized, downloadable PDF strategies generated instantly by Gemini AI!
