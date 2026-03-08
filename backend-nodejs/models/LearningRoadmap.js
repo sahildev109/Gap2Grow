@@ -22,7 +22,7 @@ const LearningRoadmapSchema = new mongoose.Schema({
       duration_weeks: Number,
       resources: [
         {
-          type: String,
+          type: { type: String },
           title: String,
           url: String,
           duration: String

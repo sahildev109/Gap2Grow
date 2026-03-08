@@ -5,6 +5,7 @@ import {
     DollarSign, BarChart2, Star, Zap, BookOpen,
     ArrowRight, Loader2, AlertTriangle, RefreshCw
 } from 'lucide-react';
+import { useDashboard } from '../context/DashboardContext';
 import './SkillGapForecast.css';
 
 const API = 'http://localhost:8000';
@@ -72,6 +73,7 @@ export default function SkillGapForecast() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [error, setError] = useState('');
+    const { createSkillGap } = useDashboard();
 
     // Load roles + pre-fill saved skills tag
     useEffect(() => {
@@ -107,6 +109,22 @@ export default function SkillGapForecast() {
             const data = await res.json();
             setResult(data);
             localStorage.setItem('gap2grow_analysis_result', JSON.stringify(data));
+            
+            // Sync with Node.js Backend so AI reports have a valid context ID
+            try {
+                await createSkillGap({
+                    targetRole: data.target_role || selectedRole,
+                    targetIndustry: 'Technology',
+                    currentSkills: (data.user_skills || []).map(s => ({ skillName: s, proficiency: 'Intermediate' })),
+                    requiredSkills: [
+                        ...(data.matched_skills || []).map(s => ({ skillName: s, importance: 'Important'})),
+                        ...(data.missing_skills || []).map(s => ({ skillName: s, importance: 'Important'}))
+                    ]
+                });
+            } catch(syncErr) { 
+                console.error("[SkillGapForecast] Failed to sync to Node backend:", syncErr); 
+            }
+            
         } catch (e) {
             setError(e.message);
         } finally {

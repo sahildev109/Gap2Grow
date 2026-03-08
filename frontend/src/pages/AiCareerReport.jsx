@@ -1,25 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, DollarSign, Briefcase, Download, Loader, CheckCircle, AlertCircle } from 'lucide-react';
+import { TrendingUp, DollarSign, Briefcase, Download, Loader, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { useDashboard } from '../context/DashboardContext';
 import reportService from '../services/reportService';
 
 const AiCareerReport = () => {
-    const { skillGap } = useDashboard();
+    const { skillGap, fetchSkillGap } = useDashboard();
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [generating, setGenerating] = useState(false);
+    const [downloading, setDownloading] = useState(false);
 
     useEffect(() => {
         fetchCareerReport();
+        if (!skillGap) {
+            fetchSkillGap();
+        }
     }, []);
 
     const fetchCareerReport = async () => {
         try {
             setLoading(true);
             const data = await reportService.getLatestCareerReport();
-            setReport(data);
-            setError(null);
+            if (!data) {
+                setReport(null);
+                setError('No career report found yet. Generate one to get started!');
+            } else {
+                setReport(data);
+                setError(null);
+            }
         } catch (err) {
             setReport(null);
             setError(err.response?.data?.message || 'Failed to fetch report');
@@ -29,119 +40,85 @@ const AiCareerReport = () => {
     };
 
     const handleGenerateReport = async () => {
+        console.log('[FRONTEND: CAREER REPORT] Generate button clicked!');
         if (!skillGap?._id) {
+            console.error('[FRONTEND: CAREER REPORT] No Skill Gap ID found, cannot generate.');
             setError('Please generate a Skill Gap Forecast first');
             return;
         }
 
         try {
+            console.log(`[FRONTEND: CAREER REPORT] Sending request to generate report for Skill Gap ID: ${skillGap._id}...`);
             setGenerating(true);
             setError(null);
             const data = await reportService.generateCareerReport(skillGap._id);
+            console.log('[FRONTEND: CAREER REPORT] ✅ Successfully received generated report from backend:', data);
             setReport(data.report);
         } catch (err) {
+            console.error('[FRONTEND: CAREER REPORT] ❌ Error generating report:', err.response?.data || err);
             setError(err.response?.data?.error || 'Failed to generate report');
         } finally {
             setGenerating(false);
+            console.log('[FRONTEND: CAREER REPORT] Generation process finished.');
         }
     };
 
-    const downloadReport = () => {
-        if (!report) return;
-        const element = document.createElement('a');
-        const file = new Blob([generateReportHTML()], { type: 'text/html' });
-        element.href = URL.createObjectURL(file);
-        element.download = `career-report-${new Date().toISOString().split('T')[0]}.html`;
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    };
+    const downloadReport = async () => {
+        if (!report || downloading) return;
+        setDownloading(true);
+        try {
+            const element = document.getElementById('report-content');
+            if (!element) return;
+            
+            // Adjust styles for capturing
+            const originalBorder = element.style.border;
+            element.style.border = 'none';
+            element.style.padding = '30px';
+            element.style.background = '#ffffff'; // ensure white background for PDF
+            
+            const canvas = await html2canvas(element, { 
+                scale: 2, 
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                windowWidth: 1000 // force desktop width capture
+            });
+            
+            // Restore styles
+            element.style.border = originalBorder;
+            element.style.padding = '';
+            element.style.background = '';
 
-    const generateReportHTML = () => {
-        if (!report) return '';
-        return `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>AI Career Report - ${report.targetRole}</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; color: #333; margin: 40px; background: #f5f5f5; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #7C3AED; border-bottom: 3px solid #A855F7; padding-bottom: 15px; margin-bottom: 30px; }
-        h2 { color: #7C3AED; margin-top: 30px; margin-bottom: 15px; border-left: 4px solid #A855F7; padding-left: 15px; }
-        .header-info { background: #f0e6ff; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        .header-info p { margin: 8px 0; }
-        .metric-card { background: #f9f9f9; border-left: 4px solid #7C3AED; padding: 15px; margin: 12px 0; border-radius: 5px; }
-        .metric-label { color: #666; font-weight: 500; font-size: 0.9em; }
-        .metric-value { color: #7C3AED; font-size: 1.3em; font-weight: bold; margin-top: 5px; }
-        ul { list-style: none; padding: 0; }
-        li { padding: 8px 0; padding-left: 25px; position: relative; }
-        li:before { content: "✓"; position: absolute; left: 0; color: #7C3AED; font-weight: bold; }
-        .danger li:before { content: "⚠"; color: #ff6b6b; }
-        .opportunity li:before { content: "★"; color: #ffa500; }
-        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 0.85em; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🎯 AI Career Report</h1>
-        <div class="header-info">
-            <p><strong>Target Role:</strong> ${report.targetRole}</p>
-            <p><strong>Career Trajectory:</strong> ${report.trajectory}</p>
-            <p><strong>Report Generated:</strong> ${new Date().toLocaleString()}</p>
-        </div>
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            
+            let position = 0;
+            const pageHeight = pdf.internal.pageSize.getHeight();
 
-        <h2>📊 Career Path Overview</h2>
-        <p>${report.careerPath}</p>
+            // Handle multiple pages
+            if (pdfHeight > pageHeight) {
+                let heightLeft = pdfHeight;
+                while (heightLeft > 0) {
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pageHeight;
+                    if (heightLeft > 0) {
+                        pdf.addPage();
+                        position -= pageHeight;
+                    }
+                }
+            } else {
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            }
 
-        <h2>📈 Expected Growth</h2>
-        <p>${report.expectedGrowth}</p>
-
-        <h2>💰 Salary Progression</h2>
-        <div class="metric-card">
-            <div class="metric-label">Current Level</div>
-            <div class="metric-value">${report.salaryProgression.currentLevel.role}</div>
-            <div class="metric-label">Estimated Salary Range</div>
-            <div>${report.salaryProgression.currentLevel.salary}</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">Target Level</div>
-            <div class="metric-value">${report.salaryProgression.targetLevel.role}</div>
-            <div class="metric-label">Estimated Salary Range</div>
-            <div>${report.salaryProgression.targetLevel.salary}</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">Timeline to Reach Target</div>
-            <div class="metric-value">${report.salaryProgression.timeline}</div>
-        </div>
-
-        <h2>🎯 Key Milestones</h2>
-        <ul>
-            ${report.keyMilestones.map(m => `<li>${m}</li>`).join('')}
-        </ul>
-
-        <h2>💡 Recommendations</h2>
-        <ul>
-            ${report.recommendations.map(r => `<li>${r}</li>`).join('')}
-        </ul>
-
-        <h2>⚠️ Risk Factors</h2>
-        <ul class="danger">
-            ${report.riskFactors.map(r => `<li>${r}</li>`).join('')}
-        </ul>
-
-        <h2>⭐ Opportunities</h2>
-        <ul class="opportunity">
-            ${report.opportunities.map(o => `<li>${o}</li>`).join('')}
-        </ul>
-
-        <div class="footer">
-            <p>This report was generated using AI analysis based on your current skills, target role, and market data. For personalized guidance, consider consulting with a career counselor.</p>
-        </div>
-    </div>
-</body>
-</html>`;
+            pdf.save(`AI-Career-Report-${report.targetRole.replace(/[^a-zA-Z0-9]/g, '-')}.pdf`);
+        } catch (err) {
+            console.error('PDF generation failed:', err);
+            setError('Failed to generate PDF document');
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) {
@@ -164,7 +141,7 @@ const AiCareerReport = () => {
                 </div>
                 <button 
                     onClick={handleGenerateReport}
-                    disabled={generating || !skillGap}
+                    disabled={generating}
                     style={{
                         padding: '12px 24px',
                         background: 'linear-gradient(135deg, #7C3AED, #A855F7)',
@@ -193,25 +170,43 @@ const AiCareerReport = () => {
                 <h1 className="text-gradient">AI Career Report</h1>
                 <button 
                     onClick={downloadReport}
+                    disabled={downloading}
                     style={{
-                        padding: '10px 16px',
-                        background: '#7C3AED',
+                        padding: '12px 22px',
+                        background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
+                        borderRadius: '30px',
+                        cursor: downloading ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '14px',
-                        fontWeight: '600'
+                        gap: '8px',
+                        fontSize: '15px',
+                        fontWeight: '700',
+                        boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)',
+                        transition: 'all 0.3s ease',
+                        opacity: downloading ? 0.7 : 1,
+                        letterSpacing: '0.5px'
+                    }}
+                    onMouseOver={(e) => {
+                        if (!downloading) {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.6)';
+                        }
+                    }}
+                    onMouseOut={(e) => {
+                        if (!downloading) {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 15px rgba(16, 185, 129, 0.4)';
+                        }
                     }}
                 >
-                    <Download size={16} /> Download
+                    {downloading ? <Loader size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <FileText size={18} />}
+                    {downloading ? 'Capturing PDF...' : 'Download as PDF'}
                 </button>
             </div>
 
-            <div className="glass-card animate-fade-in-up" style={{ marginBottom: '2rem' }}>
+            <div id="report-content" className="glass-card animate-fade-in-up" style={{ marginBottom: '2rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
                     <div style={{ padding: '1rem', background: 'rgba(124, 58, 237, 0.15)', borderRadius: 'var(--radius-lg)' }}>
                         <TrendingUp size={32} color="var(--primary)" />

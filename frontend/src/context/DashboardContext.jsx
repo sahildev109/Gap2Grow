@@ -181,9 +181,11 @@ export const DashboardProvider = ({ children }) => {
       setItemLoading('skillGap', true);
       setItemError('skillGap', null);
       const data = await skillGapService.getLatestSkillGap();
+      console.log('[CONTEXT: fetchSkillGap] Successfully fetched data from API:', JSON.parse(JSON.stringify(data)));
       setSkillGap(data);
       return data;
     } catch (err) {
+      console.error('[CONTEXT: fetchSkillGap] Failed to fetch:', err);
       const errorMsg = err.error || 'No skill gap analysis found';
       setItemError('skillGap', errorMsg);
       return null;
@@ -198,6 +200,7 @@ export const DashboardProvider = ({ children }) => {
       setItemLoading('skillGap', true);
       setItemError('skillGap', null);
       const response = await skillGapService.createSkillGap(analysisData);
+      console.log('[CONTEXT: createSkillGap] Successfully created skill gap:', response.skillGap);
       setSkillGap(response.skillGap);
       return response;
     } catch (err) {

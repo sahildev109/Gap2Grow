@@ -8,9 +8,11 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Generate AI Career Report using Gemini
 const generateCareerReport = async (req, res) => {
+  console.log('\n--- [BACKEND: CAREER REPORT] GENERATION STARTED ---');
   try {
     const userId = req.user.userId;
     const { skillGapId } = req.body;
+    console.log(`[BACKEND: CAREER REPORT] Request received for user ${userId}, skillGapId: ${skillGapId || 'latest'}`);
 
     // Fetch user and skill gap data
     const user = await User.findById(userId);
@@ -61,20 +63,34 @@ Please provide a comprehensive career report in JSON format with the following f
 
 Make sure the response is valid JSON that can be parsed.`;
 
+    console.log(`[BACKEND: CAREER REPORT] Sending prompt to Gemini for target role: ${skillGap.targetRole}...`);
     // Call Gemini API
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    let responseText = result.response.text();
 
-    // Parse JSON from response
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return res.status(500).json({ error: 'Failed to parse Gemini response' });
+    let reportData;
+    try {
+      console.log(`[BACKEND: CAREER REPORT] Received raw response from Gemini (length: ${responseText.length})`);
+      reportData = JSON.parse(responseText.replace(/```json/g, '').replace(/```/g, '').trim());
+      console.log(`[BACKEND: CAREER REPORT] Successfully parsed JSON directly!`);
+    } catch (parseError) {
+      console.log(`[BACKEND: CAREER REPORT] Direct JSON parse failed, trying regex fallback...`);
+      try {
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          reportData = JSON.parse(jsonMatch[0]);
+          console.log(`[BACKEND: CAREER REPORT] Successfully parsed JSON via regex!`);
+        } else {
+          throw new Error('No JSON object found in response');
+        }
+      } catch (fallbackError) {
+        console.error('\n[BACKEND: CAREER REPORT] ❌ Failed to parse Gemini response! Raw Text:\n', responseText);
+        return res.status(500).json({ error: 'Failed to parse Gemini response as JSON' });
+      }
     }
 
-    const reportData = JSON.parse(jsonMatch[0]);
-
-    // Save to database
+    console.log(`[BACKEND: CAREER REPORT] Saving generated report to MongoDB...`);
     const careerReport = new CareerReport({
       userId,
       skillGapId,
@@ -90,6 +106,7 @@ Make sure the response is valid JSON that can be parsed.`;
     });
 
     await careerReport.save();
+    console.log(`[BACKEND: CAREER REPORT] ✅ Report successfully saved for user ${userId}! Sending to frontend.`);
 
     res.json({
       success: true,
@@ -97,7 +114,7 @@ Make sure the response is valid JSON that can be parsed.`;
       message: 'Career report generated successfully'
     });
   } catch (error) {
-    console.error('Error generating career report:', error);
+    console.error('\n[BACKEND: CAREER REPORT] ❌ Fatal error generating career report:\n', error);
     res.status(500).json({ error: error.message || 'Failed to generate career report' });
   }
 };
@@ -112,9 +129,7 @@ const getLatestCareerReport = async (req, res) => {
       .populate('skillGapId');
 
     if (!report) {
-      return res.status(404).json({ 
-        message: 'No career report found. Generate one to get started.' 
-      });
+      return res.json(null);
     }
 
     res.json(report);
@@ -126,9 +141,11 @@ const getLatestCareerReport = async (req, res) => {
 
 // Generate Learning Roadmap using Gemini
 const generateLearningRoadmap = async (req, res) => {
+  console.log('\n--- [BACKEND: LEARNING ROADMAP] GENERATION STARTED ---');
   try {
     const userId = req.user.userId;
     const { skillGapId } = req.body;
+    console.log(`[BACKEND: LEARNING ROADMAP] Request received for user ${userId}, skillGapId: ${skillGapId || 'latest'}`);
 
     // Fetch user and skill gap data
     const user = await User.findById(userId);
@@ -183,20 +200,34 @@ Please provide a comprehensive learning roadmap in JSON format with the followin
 
 Create 5-7 steps with realistic timelines and quality resources. Make sure the response is valid JSON.`;
 
+    console.log(`[BACKEND: LEARNING ROADMAP] Sending prompt to Gemini for target role: ${skillGap.targetRole}...`);
     // Call Gemini API
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    let responseText = result.response.text();
 
-    // Parse JSON from response
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return res.status(500).json({ error: 'Failed to parse Gemini response' });
+    let roadmapData;
+    try {
+      console.log(`[BACKEND: LEARNING ROADMAP] Received raw response from Gemini (length: ${responseText.length})`);
+      roadmapData = JSON.parse(responseText.replace(/```json/g, '').replace(/```/g, '').trim());
+      console.log(`[BACKEND: LEARNING ROADMAP] Successfully parsed JSON directly!`);
+    } catch (parseError) {
+      console.log(`[BACKEND: LEARNING ROADMAP] Direct JSON parse failed, trying regex fallback...`);
+      try {
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          roadmapData = JSON.parse(jsonMatch[0]);
+          console.log(`[BACKEND: LEARNING ROADMAP] Successfully parsed JSON via regex!`);
+        } else {
+          throw new Error('No JSON object found in response');
+        }
+      } catch (fallbackError) {
+        console.error('\n[BACKEND: LEARNING ROADMAP] ❌ Failed to parse Gemini response! Raw Text:\n', responseText);
+        return res.status(500).json({ error: 'Failed to parse Gemini response as JSON' });
+      }
     }
 
-    const roadmapData = JSON.parse(jsonMatch[0]);
-
-    // Save to database
+    console.log(`[BACKEND: LEARNING ROADMAP] Saving generated roadmap to MongoDB...`);
     const roadmap = new LearningRoadmap({
       userId,
       skillGapId,
@@ -209,6 +240,7 @@ Create 5-7 steps with realistic timelines and quality resources. Make sure the r
     });
 
     await roadmap.save();
+    console.log(`[BACKEND: LEARNING ROADMAP] ✅ Roadmap successfully saved for user ${userId}! Sending to frontend.`);
 
     res.json({
       success: true,
@@ -216,7 +248,7 @@ Create 5-7 steps with realistic timelines and quality resources. Make sure the r
       message: 'Learning roadmap generated successfully'
     });
   } catch (error) {
-    console.error('Error generating learning roadmap:', error);
+    console.error('\n[BACKEND: LEARNING ROADMAP] ❌ Fatal error generating learning roadmap:\n', error);
     res.status(500).json({ error: error.message || 'Failed to generate learning roadmap' });
   }
 };
@@ -231,9 +263,7 @@ const getLatestLearningRoadmap = async (req, res) => {
       .populate('skillGapId');
 
     if (!roadmap) {
-      return res.status(404).json({ 
-        message: 'No learning roadmap found. Generate one to get started.' 
-      });
+      return res.json(null);
     }
 
     res.json(roadmap);

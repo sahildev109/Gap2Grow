@@ -1,25 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Map as MapIcon, ExternalLink, BookOpen, Download, Loader } from 'lucide-react';
+import { Map as MapIcon, ExternalLink, BookOpen, Download, Loader, FileText } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { useDashboard } from '../context/DashboardContext';
 import reportService from '../services/reportService';
 
 const LearningRoadmap = () => {
-    const { skillGap } = useDashboard();
+    const { skillGap, fetchSkillGap } = useDashboard();
     const [roadmap, setRoadmap] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [generating, setGenerating] = useState(false);
+    const [downloading, setDownloading] = useState(false);
 
     useEffect(() => {
         fetchRoadmap();
+        if (!skillGap) {
+            fetchSkillGap();
+        }
     }, []);
 
     const fetchRoadmap = async () => {
         try {
             setLoading(true);
             const data = await reportService.getLatestLearningRoadmap();
-            setRoadmap(data);
-            setError(null);
+            if (!data) {
+                setRoadmap(null);
+                setError('No learning roadmap found yet. Generate one to get started!');
+            } else {
+                setRoadmap(data);
+                setError(null);
+            }
         } catch (err) {
             setRoadmap(null);
             setError(err.response?.data?.message || 'Failed to fetch roadmap');
@@ -29,83 +40,85 @@ const LearningRoadmap = () => {
     };
 
     const handleGenerateRoadmap = async () => {
+        console.log('[FRONTEND: LEARNING ROADMAP] Generate button clicked!');
         if (!skillGap?._id) {
+            console.error('[FRONTEND: LEARNING ROADMAP] No Skill Gap ID found, cannot generate.');
             setError('Please generate a Skill Gap Forecast first');
             return;
         }
 
         try {
+            console.log(`[FRONTEND: LEARNING ROADMAP] Sending request to generate roadmap for Skill Gap ID: ${skillGap._id}...`);
             setGenerating(true);
             setError(null);
             const data = await reportService.generateLearningRoadmap(skillGap._id);
+            console.log('[FRONTEND: LEARNING ROADMAP] ✅ Successfully received generated roadmap from backend:', data);
             setRoadmap(data.roadmap);
         } catch (err) {
+            console.error('[FRONTEND: LEARNING ROADMAP] ❌ Error generating roadmap:', err.response?.data || err);
             setError(err.response?.data?.error || 'Failed to generate roadmap');
         } finally {
             setGenerating(false);
+            console.log('[FRONTEND: LEARNING ROADMAP] Generation process finished.');
         }
     };
 
-    const downloadRoadmap = () => {
-        if (!roadmap) return;
-        const element = document.createElement('a');
-        const file = new Blob([generateRoadmapHTML()], { type: 'text/html' });
-        element.href = URL.createObjectURL(file);
-        element.download = `learning-roadmap-${new Date().toISOString().split('T')[0]}.html`;
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    };
+    const downloadRoadmap = async () => {
+        if (!roadmap || downloading) return;
+        setDownloading(true);
+        try {
+            const element = document.getElementById('roadmap-content');
+            if (!element) return;
+            
+            // Adjust styles for capturing
+            const originalBorder = element.style.border;
+            element.style.border = 'none';
+            element.style.padding = '30px';
+            element.style.background = '#ffffff'; // ensure white background for PDF
+            
+            const canvas = await html2canvas(element, { 
+                scale: 2, 
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                windowWidth: 1000 // force desktop width capture
+            });
+            
+            // Restore styles
+            element.style.border = originalBorder;
+            element.style.padding = '';
+            element.style.background = '';
 
-    const generateRoadmapHTML = () => {
-        if (!roadmap) return '';
-        return `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Learning Roadmap - ${roadmap.targetRole}</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 40px; }
-        h1 { color: #7C3AED; border-bottom: 3px solid #A855F7; padding-bottom: 10px; }
-        h3 { color: #7C3AED; margin-top: 20px; }
-        .step { border-left: 4px solid #7C3AED; padding: 15px; margin: 15px 0; background: #f9f9f9; }
-        .step-number { display: inline-block; background: #7C3AED; color: white; width: 30px; height: 30px; border-radius: 50%; text-align: center; line-height: 30px; margin-right: 10px; font-weight: bold; }
-        .resources { background: #f0e6ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
-        .resource-link { color: #7C3AED; text-decoration: none; }
-        .meta { color: #666; font-size: 0.9em; }
-    </style>
-</head>
-<body>
-    <h1>Learning Roadmap: ${roadmap.targetRole}</h1>
-    <p class="meta"><strong>Target Role:</strong> ${roadmap.targetRole}</p>
-    <p class="meta"><strong>Total Duration:</strong> ${roadmap.totalDuration}</p>
-    <p class="meta"><strong>Difficulty Level:</strong> ${roadmap.difficulty_level}</p>
-    <p class="meta"><strong>Learning Style:</strong> ${roadmap.learningStyle}</p>
-    <p class="meta"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
-    <hr>
-    ${roadmap.steps.map(step => `
-        <div class="step">
-            <h3><span class="step-number">${step.step_number}</span>${step.title}</h3>
-            <p>${step.description}</p>
-            <p><strong>Skills:</strong> ${step.skills.join(', ')}</p>
-            <p><strong>Duration:</strong> ${step.duration_weeks} weeks</p>
-            <p><strong>Difficulty:</strong> ${step.difficulty}</p>
-            ${step.resources && step.resources.length > 0 ? `
-                <div class="resources">
-                    <strong>Resources:</strong>
-                    <ul>
-                        ${step.resources.map(r => `<li><a href="${r.url}" class="resource-link">${r.title}</a> (${r.type})</li>`).join('')}
-                    </ul>
-                </div>
-            ` : ''}
-            ${step.milestones && step.milestones.length > 0 ? `
-                <p><strong>Milestones:</strong> ${step.milestones.join(', ')}</p>
-            ` : ''}
-        </div>
-    `).join('')}
-</body>
-</html>`;
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            
+            let position = 0;
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            // Handle multiple pages
+            if (pdfHeight > pageHeight) {
+                let heightLeft = pdfHeight;
+                while (heightLeft > 0) {
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pageHeight;
+                    if (heightLeft > 0) {
+                        pdf.addPage();
+                        position -= pageHeight;
+                    }
+                }
+            } else {
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            }
+
+            pdf.save(`Learning-Roadmap-${roadmap.targetRole.replace(/[^a-zA-Z0-9]/g, '-')}.pdf`);
+        } catch (err) {
+            console.error('PDF generation failed:', err);
+            setError('Failed to generate PDF document');
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) {
@@ -128,7 +141,7 @@ const LearningRoadmap = () => {
                 </div>
                 <button 
                     onClick={handleGenerateRoadmap}
-                    disabled={generating || !skillGap}
+                    disabled={generating}
                     style={{
                         padding: '12px 24px',
                         background: 'linear-gradient(135deg, #7C3AED, #A855F7)',
@@ -157,25 +170,44 @@ const LearningRoadmap = () => {
                 <h1 className="text-gradient">Learning Roadmap</h1>
                 <button 
                     onClick={downloadRoadmap}
+                    disabled={downloading}
                     style={{
-                        padding: '10px 16px',
-                        background: '#7C3AED',
+                        padding: '12px 22px',
+                        background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
+                        borderRadius: '30px',
+                        cursor: downloading ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '14px',
-                        fontWeight: '600'
+                        gap: '8px',
+                        fontSize: '15px',
+                        fontWeight: '700',
+                        boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)',
+                        transition: 'all 0.3s ease',
+                        opacity: downloading ? 0.7 : 1,
+                        letterSpacing: '0.5px'
+                    }}
+                    onMouseOver={(e) => {
+                        if (!downloading) {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.6)';
+                        }
+                    }}
+                    onMouseOut={(e) => {
+                        if (!downloading) {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 15px rgba(59, 130, 246, 0.4)';
+                        }
                     }}
                 >
-                    <Download size={16} /> Download
+                    {downloading ? <Loader size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <FileText size={18} />}
+                    {downloading ? 'Capturing PDF...' : 'Download as PDF'}
                 </button>
             </div>
 
-            <div className="glass-card" style={{ marginBottom: '2rem' }}>
+            <div id="roadmap-content">
+                <div className="glass-card" style={{ marginBottom: '2rem' }}>
                 <p><strong>Target Role:</strong> {roadmap.targetRole}</p>
                 <p><strong>Total Duration:</strong> {roadmap.totalDuration}</p>
                 <p><strong>Difficulty:</strong> {roadmap.difficulty_level}</p>
@@ -235,6 +267,7 @@ const LearningRoadmap = () => {
                         )}
                     </div>
                 ))}
+            </div>
             </div>
         </div>
     );

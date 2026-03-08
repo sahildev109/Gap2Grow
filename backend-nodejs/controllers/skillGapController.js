@@ -3,13 +3,14 @@ const JobMarket = require('../models/JobMarket');
 
 // Get latest skill gap analysis
 exports.getLatestSkillGap = async (req, res) => {
+  console.log(`\n--- [BACKEND: SKILL GAP] getLatestSkillGap hit by user ${req.user?.userId} ---`);
   try {
     const skillGap = await SkillGap.findOne(
       { userId: req.user.userId, isLatest: true }
     );
 
     if (!skillGap) {
-      return res.status(404).json({ error: 'No skill gap analysis found' });
+      return res.json(null);
     }
 
     res.status(200).json(skillGap);
