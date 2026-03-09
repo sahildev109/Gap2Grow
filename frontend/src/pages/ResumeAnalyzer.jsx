@@ -7,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import './ResumeAnalyzer.css';
 
-const API = 'http://localhost:8000';
+const API = import.meta.env.VITE_PYTHON_BACKEND_URL;
 
 /* ── Category accent colours ──────────────────────────────── */
 const CAT_COLORS = {
@@ -130,7 +130,7 @@ export default function ResumeAnalyzer() {
             const fd = new FormData();
             fd.append('file', file);
 
-            const res = await fetch(`${API}/api/parse-resume`, { method: 'POST', body: fd });
+            const res = await fetch(`${API}/parse-resume`, { method: 'POST', body: fd });
             if (!res.ok) {
                 const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
                 throw new Error(err.detail || `HTTP ${res.status}`);

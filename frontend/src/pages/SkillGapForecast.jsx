@@ -8,7 +8,7 @@ import {
 import { useDashboard } from '../context/DashboardContext';
 import './SkillGapForecast.css';
 
-const API = 'http://localhost:8000';
+const API = import.meta.env.VITE_PYTHON_BACKEND_URL;
 
 /* ── helpers ─────────────────────────────────────────────── */
 function scoreColor(s) { return s >= 80 ? '#059669' : s >= 60 ? '#d97706' : s >= 40 ? '#f97316' : '#dc2626'; }
@@ -77,7 +77,7 @@ export default function SkillGapForecast() {
 
     // Load roles + pre-fill saved skills tag
     useEffect(() => {
-        fetch(`${API}/api/job-roles`)
+        fetch(`${API}/job-roles`)
             .then(r => r.json())
             .then(data => { setRoles(data); if (data.length) setRole(data[0]); })
             .catch(() => setError('Could not load job roles.'));
@@ -100,7 +100,7 @@ export default function SkillGapForecast() {
         setError('');
         setResult(null);
         try {
-            const res = await fetch(`${API}/api/skill-gap`, {
+            const res = await fetch(`${API}/skill-gap`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ target_role: selectedRole, skills: skillsToUse }),
