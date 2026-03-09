@@ -40,6 +40,11 @@ async def shutdown_db_client():
 def read_root():
     return {"message": "Welcome to Gap2Grow API"}
 
+@app.head("/health")
+def health_head(response: Response):
+    return Response(status_code=200)
+
+
 @app.get("/api/overview", response_model=dict)
 async def api_get_overview():
     """
