@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import './Dashboard.css';
 
-const API = 'http://localhost:8000';
+const API = import.meta.env.VITE_PYTHON_BACKEND_URL;
 
 /* ─── tiny helpers ─────────────────────────────────────────── */
 function scoreColor(s) {
@@ -70,8 +70,8 @@ export default function Dashboard() {
         async function load() {
             try {
                 const [ovRes, recRes] = await Promise.all([
-                    fetch(`${API}/api/overview`),
-                    fetch(`${API}/api/recent-analyses?limit=8`),
+                    fetch(`${API}/overview`),
+                    fetch(`${API}/recent-analyses?limit=8`),
                 ]);
                 if (!ovRes.ok || !recRes.ok) throw new Error('API error');
                 const [ovData, recData] = await Promise.all([ovRes.json(), recRes.json()]);
